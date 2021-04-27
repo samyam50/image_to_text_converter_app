@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -11,7 +12,48 @@ class _HomePageState extends State<HomePage> {
 
   String result="";
   File image;
-  Future<File> imageFile;
+  
+  ImagePicker imagePicker;
+
+  pickImageFromGallery() async
+  {
+    PickedFile pickedFile = await imagePicker.getImage(source: ImageSource.gallery);
+
+    image = File(pickedFile.path);
+
+    setState(() {
+      image;
+    });
+
+
+  }
+
+  captureImageWithCamera() async
+  {
+    PickedFile pickedFile = await imagePicker.getImage(source: ImageSource.camera);
+
+    image = File(pickedFile.path);
+
+    setState(() {
+      image;
+    });
+
+
+
+  }
+
+  @override
+  void initState() {
+    
+    super.initState();
+
+    imagePicker = ImagePicker();
+  }
+
+
+
+
+  
 
   @override
   Widget build(BuildContext context) {
@@ -65,6 +107,8 @@ class _HomePageState extends State<HomePage> {
             ),
                 Center(
                   child: TextButton(
+                    onPressed: (){pickImageFromGallery();},
+                    onLongPress: (){captureImageWithCamera();},
                     child: Container(
                       margin: EdgeInsets.only(top: 25),
                       child: image != null ? Image.file(image, width: 140, height: 192, fit: BoxFit.fill,):
