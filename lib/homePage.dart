@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:firebase_ml_vision/firebase_ml_vision.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -23,6 +24,8 @@ class _HomePageState extends State<HomePage> {
 
     setState(() {
       image;
+
+      performImageLabeling();
     });
 
 
@@ -36,10 +39,39 @@ class _HomePageState extends State<HomePage> {
 
     setState(() {
       image;
+
+      performImageLabeling();
+
     });
+  }
 
+  performImageLabeling() async
+  {
+    final FirebaseVisionImage firebaseVisionImage = FirebaseVisionImage.fromFile(image);
 
+    final TextRecognizer recognizer = FirebaseVision.instance.textRecognizer();
 
+    VisionText visionText = await recognizer.processImage(firebaseVisionImage);
+
+    result = " ";
+
+    setState(() {
+      for (TextBlock block in visionText.blocks)
+        {
+          final String txt= block.text;
+
+          for(TextLine line in block.lines)
+            {
+              for( TextElement element in line.elements)
+                {
+                  result += element.text+" ";
+                }
+
+            }
+          result += "\n\n";
+
+    }
+    });
   }
 
   @override
